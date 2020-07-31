@@ -59,8 +59,23 @@ class DatasetModel(db.Model):
         return newLst
 
     def delete_from_db(self):
+        hashValue = hashIdandTitle(self.title, self.id)
+        client = RedisClient()
+        client.delete(hashValue)
         db.session.delete(self)
         db.session.commit()
+
+    def modified_db_value(self,title,description,values):
+        oldhashValue = hashIdandTitle(self.title, self.id)
+        oldDataSet = self.getDataSet()
+        if oldDataSet:
+            client = RedisClient()
+            client.delete(oldhashValue)
+        self.title = title
+        self.description = description
+        self.save_to_db(values)
+
+
 
 class DatasetSchema(Schema):
     id = fields.Integer()

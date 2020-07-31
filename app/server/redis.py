@@ -18,3 +18,6 @@ class RedisClient():
     def getFullList(self, key):
         data = self.client.lrange(key, 0, -1)
         return data
+
+    def delete(self, key):
+        self.client.delete(key)
