@@ -1,0 +1,17 @@
+FROM python:3.8.3
+
+
+
+WORKDIR /app
+
+COPY requirements.txt /app
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+COPY ./ /app
+ENV FLASK_APP=server
+ENV FLASK_ENV=development
+ENV SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://root:root@db:3306/calculatorApp
+ENV SECRET_KEY=ZHANG
+CMD ["python", "wsgi.py"]
