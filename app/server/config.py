@@ -19,6 +19,7 @@ class Config:
     MAIL_PORT = environ.get('MAIL_PORT')
     MAIL_USE_TLS=environ.get('MAIL_USE_TLS')
     MAIL_USE_SSL=environ.get('MAIL_USE_SSL')
+    SECURITY_PASSWORD_SALT = environ.get("SECURITY_PASSWORD_SALT")
     MAIL_USERNAME=environ.get('MAIL_USERNAME')
     MAIL_PASSWORD=environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER=environ.get('MAIL_DEFAULT_SENDER')

@@ -1,16 +1,19 @@
-from flask import Flask
+from flask import Flask, render_template
 import os
 from flask.json import jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt import JWT
 from datetime import timedelta
-from flask import Response
+from flask_mail import Mail
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
+from flask_login import LoginManager
+from server.model.userModel import UserModel as User
 
-db = SQLAlchemy()
+
+
+mail = Mail()
+login_manager = LoginManager()
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -19,8 +22,11 @@ def create_app(test_config=None):
         app.config.from_object('server.config.Config')
     else:
         app.config.update(test_config)
-    db.init_app(app)
     with app.app_context():
+        mail.init_app(app)
+        login_manager.init_app(app)
+        from server.model import db
+        db.init_app(app)
         from .index import index_bp
         app.register_blueprint(index_bp, url_prefix="/")
         from .calculator import calculator_bp
@@ -30,6 +36,13 @@ def create_app(test_config=None):
         app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=18000)
         jwt = JWTManager(app)
 
+        @login_manager.user_loader
+        def load_user(user_id):
+            return User.find_by_id(id=user_id)
+
+        @app.errorhandler(404)
+        def page_not_found(error):
+            return render_template("errors/404.html"), 404
 
         @jwt.invalid_token_loader
         def invalid_token_callback(invalid_token):

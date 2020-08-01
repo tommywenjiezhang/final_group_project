@@ -1,16 +1,18 @@
-from .. import db
+from . import db
 from marshmallow import Schema, fields
 import json
 from server.redis import RedisClient
 from server.util import hashIdandTitle
 import struct
+
 class DatasetModel(db.Model):
     __tablename__ = "Dataset"
     id = db.Column('id',db.Integer,primary_key=True)
     title = db.Column("title", db.String(30))
-    description = db.Column("description", db.String)
+    description = db.Column("description", db.String(80))
     created_at = db.Column("created_at", db.DateTime)
     user_id = db.Column("user_id", db.Integer, db.ForeignKey('User.UserID'))
+
 
 
     def __init__(self,title,description,created_at,user_id):

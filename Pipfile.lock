@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "30729a288245fc574297235f3e3ed4f45c6de21ce10180d80ef02d8b626ab40f"
+            "sha256": "0f421770da75e4ae206d603cabb6400e6736956cd0d1a7c36c3a881605bfcc16"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -32,6 +32,12 @@
             "index": "pypi",
             "version": "==19.3.0"
         },
+        "blinker": {
+            "hashes": [
+                "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"
+            ],
+            "version": "==1.4"
+        },
         "click": {
             "hashes": [
                 "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a",
@@ -56,12 +62,27 @@
             "index": "pypi",
             "version": "==3.0.8"
         },
-        "flask-jwt": {
+        "flask-jwt-extended": {
             "hashes": [
-                "sha256:49c0672fbde0f1cd3374bd834918d28956e3c521c7e00089cdc5380d323bd0ad"
+                "sha256:0aa8ee6fa7eb3be9314e39dd199ac8e19389a95371f9d54e155c7aa635e319dd"
             ],
             "index": "pypi",
-            "version": "==0.3.2"
+            "version": "==3.24.1"
+        },
+        "flask-login": {
+            "hashes": [
+                "sha256:6d33aef15b5bcead780acc339464aae8a6e28f13c90d8b1cf9de8b549d1c0b4b",
+                "sha256:7451b5001e17837ba58945aead261ba425fdf7b4f0448777e597ddab39f4fba0"
+            ],
+            "index": "pypi",
+            "version": "==0.5.0"
+        },
+        "flask-mail": {
+            "hashes": [
+                "sha256:22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41"
+            ],
+            "index": "pypi",
+            "version": "==0.9.1"
         },
         "flask-restful": {
             "hashes": [
@@ -229,10 +250,10 @@
         },
         "pyjwt": {
             "hashes": [
-                "sha256:87a831b7a3bfa8351511961469ed0462a769724d4da48a501cb8c96d1e17f570",
-                "sha256:99fe612dbe5f41e07124d9002c118c14f3ee703574ffa9779fee78135b8b94b6"
+                "sha256:5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e",
+                "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"
             ],
-            "version": "==1.4.2"
+            "version": "==1.7.1"
         },
         "pyparsing": {
             "hashes": [

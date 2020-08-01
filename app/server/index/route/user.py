@@ -1,13 +1,19 @@
 from flask_restful import Resource, reqparse
 from server.model.userModel import UserModel
 from werkzeug.security import generate_password_hash
-from flask import Response, session, jsonify
+from flask import Response, session, jsonify, flash, render_template, url_for
 import json
 from server.auth import authenicate
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
+from datetime import datetime
+from server.mail.email_token import confirm_token, generate_confirmation_token
+from flask_login import login_user, logout_user, \
+    login_required, current_user
+from server.mail import send_email
+
 class UserRegisterRoute(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('username', type=str, required=True,
@@ -25,9 +31,15 @@ class UserRegisterRoute(Resource):
                          password= generate_password_hash(data['password']),
                          name=data['name'],
                          email=data['email'],
-                         phone=data['phone']
+                         phone=data['phone'],
+                         confirmed=False
                          )
-        user.save_to_db()
+        token = generate_confirmation_token(user.email)
+        confirm_url = url_for('index_bp.userconfirmemailroute', token=token, _external=True)
+        html = render_template('user/activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.email, subject, html)
+        login_user(user)
         return {"message": "User created successfully."}
 
 class UserLoginRoute(Resource):
@@ -46,10 +58,42 @@ class UserLoginRoute(Resource):
             'user_id' : user.id
         }
         access_token = create_access_token(identity=userObj)
-        session['username'] = data['username']
-        session['loggedin'] = True
+        login_user(user)
         jsonResponse = jsonify(access_token=access_token)
         return jsonResponse
+
+class UserConfirmEmailRoute(Resource):
+    @login_required
+    def get(self,token):
+        if current_user.confirmed:
+            flash('Account already confirmed. Please login.', 'success')
+        email = confirm_token(token)
+        user = UserModel.find_by_email(email=current_user.email).first_or_404()
+        if user.email == email:
+            user.confirmed = True
+            user.confirmed_on = datetime.now()
+            user.save_to_db()
+            return jsonify({'success':  'You have confirmed your account. Thanks!'})
+        else:
+            return jsonify({'error': 'The confirmation link is invalid or has expired.'})
+
+class ResendConfirmationRoute(Resource):
+    @login_required
+    def get(self):
+        token = generate_confirmation_token(current_user.email)
+        confirm_url = url_for('indexApi.UserConfirmEmailRoute', token=token, _external=True)
+        html = render_template('user/activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(current_user.email, subject, html)
+        flash('A new confirmation email has been sent.', 'success')
+
+
+
+
+
+
+
+
 
 
 

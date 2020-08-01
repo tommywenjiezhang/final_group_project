@@ -5,6 +5,8 @@ services:
       context: ./app
       dockerfile: Dockerfile.dev
     container_name: server
+    env_file:
+      - ./app/server/.env
     volumes:
       - ./app:/app
     depends_on:

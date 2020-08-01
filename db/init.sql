@@ -1,4 +1,5 @@
 create database calculatorApp;
+create database newCalculator;
 use calculatorApp;
 
 DROP TABLE IF EXISTS `User`;
