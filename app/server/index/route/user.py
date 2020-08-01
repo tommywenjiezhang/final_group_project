@@ -1,10 +1,13 @@
 from flask_restful import Resource, reqparse
 from server.model.userModel import UserModel
 from werkzeug.security import generate_password_hash
-from flask_jwt import jwt_required
-from flask import Response
+from flask import Response, session, jsonify
 import json
-
+from server.auth import authenicate
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 class UserRegisterRoute(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('username', type=str, required=True,
@@ -29,17 +32,24 @@ class UserRegisterRoute(Resource):
 
 class UserLoginRoute(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('user_id', type=int, required=True,
+    parser.add_argument('username', type=str, required=True,
                         help="This field cannot be blank.")
-    @jwt_required()
+    parser.add_argument('password', type=str,  required=True,
+                        help="This field cannot be blank.")
     def post(self):
         data = UserLoginRoute.parser.parse_args()
-        print(data['user_id'])
-        user = UserModel.find_by_id(data['user_id'])
-        userProfile = user.profile()
-        message = {'msg':'User login successful'}
-        mergeobj = {**message, **userProfile}
-        return Response(response=json.dumps(mergeobj), status=200, mimetype="application/json")
+        user = authenicate(username=data['username'],password=data['password'])
+        if not user:
+            return json.dumps({"msg":"username or password is incorrect"}), 401
+        userObj = {
+            'username': data['username'],
+            'user_id' : user.id
+        }
+        access_token = create_access_token(identity=userObj)
+        session['username'] = data['username']
+        session['loggedin'] = True
+        jsonResponse = jsonify(access_token=access_token)
+        return jsonResponse
 
 
 

@@ -4,7 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT
 from datetime import timedelta
 from flask import Response
-
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
 db = SQLAlchemy()
 
@@ -24,21 +27,24 @@ def create_app(test_config=None):
         from .calculator import calculator_bp
         app.register_blueprint(calculator_bp, url_prefix="/calculator")
         from .auth import authenicate, identity
-        app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=18000)
-        jwt = JWT(app, authenicate, identity)
+        app.config['JWT_SECRET_KEY'] = 'super-secret'
+        app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=18000)
+        jwt = JWTManager(app)
 
-        @jwt.auth_response_handler
-        def customized_response_handler(access_token, identity):
+
+        @jwt.invalid_token_loader
+        def invalid_token_callback(invalid_token):
             return jsonify({
-                'access_token': access_token.decode('utf-8'),
-                'user_id': identity.id}
-            )
+                'status': 401,
+                'msg': 'The request does not provide a token'
+            })
 
-        @jwt.jwt_error_handler
-        def customized_error_handler(error):
-            return Response(response=jsonify({'message': error.description,'code': error.status_code}), status=error.status_code,mimetype="application/json")
-
-
+        @jwt.expired_token_loader
+        def expired_token_loader():
+            return  jsonify({
+                'status': 401,
+                'msg': 'token has expired please login again'
+            })
 
     return app
 

@@ -5,7 +5,7 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(dotenv_path=basedir)
 
 class Config:
-    """Set Flask configuration from .env file."""
+    """Set Flask configuration from mail.cfg file."""
 
     # General Config
     FLASK_APP = environ.get('FLASK_APP')
