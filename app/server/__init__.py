@@ -1,4 +1,5 @@
 from flask import Flask
+import os
 from flask.json import jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT
@@ -13,8 +14,6 @@ db = SQLAlchemy()
 
 def create_app(test_config=None):
     app = Flask(__name__)
-
-    app.config.from_object('server.config.Config')
     app.secret_key = "zhang"
     if test_config == None:
         app.config.from_object('server.config.Config')
