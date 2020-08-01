@@ -6,6 +6,7 @@ from datetime import datetime
 import re
 import pytz
 from server.calculator.Calculator import basicStatisic
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
 class IndexRoute(Resource):
@@ -20,12 +21,15 @@ class IndexRoute(Resource):
         jsonRes = json.dumps([datasetSchema.dump(dataset) for dataset in datasets])
         return Response(response=jsonRes, status=200)
 
+    @jwt_required
     def post(self):
         data = IndexRoute.parser.parse_args()
+        user = get_jwt_identity()
+        print(user)
         datasetObj = {"title": data['title'],
                       'description': data['description'],
                       "created_at": datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %H:%M:%S'),
-                      'user_id':1
+                      'user_id': user['user_id']
                       }
         datasetValue = getValues(data['values'])
         dataset = DatasetModel(**datasetObj)
