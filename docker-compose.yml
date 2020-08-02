@@ -1,10 +1,21 @@
 version: "3"
 services:
+  db:
+    image: mysql:5.7
+    container_name: "MySQL_Database_Flask"
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
   api:
     build:
       context: ./app
       dockerfile: Dockerfile.dev
     container_name: server
+    env_file:
+      - ./app/server/.env
     volumes:
       - ./app:/app
     depends_on:
@@ -13,6 +24,13 @@ services:
       - db
     ports:
       - "5000:5000"
+    restart: on-failure
+    command: ["./wait-for-it.sh", "db:3306", "--", "/bin/bash", "./create.sh"]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
@@ -21,15 +39,7 @@ services:
   redis:
     image: 'redis:latest'
     container_name: "redis_server"
-  db:
-      image: mysql:5.7
-      container_name: "MySQL_Database_Flask"
-      ports:
-        - "32000:3306"
-      environment:
-        MYSQL_ROOT_PASSWORD: root
-      volumes:
-        - ./db:/docker-entrypoint-initdb.d/:ro
+
 #  client:
 #    build:
 #      context: ./client

@@ -1,0 +1,42 @@
+{% block content %}
+    <style>
+    .jumbtron{
+  max-height:80%;
+  width:50%;
+  background-color:#faf9f9;
+  text-align:center;
+  padding-left:5%;
+  padding-right:5%;
+  padding-bottom:5%;
+  color:#555b6e;
+}
+
+.jumbtron div{
+  background-color:#DAD3D3;
+  padding-top:1%;
+  padding-bottom:10%;
+  max-height:100%;
+  max-width:100%;
+}
+
+.message_button{
+  padding-top:5%;
+  padding-bottom:5%;
+  max-height:100%;
+
+  padding-left:10%;
+  padding-right:10%;
+  background-color:#0096c7;
+  color: #ffffff
+}</style>
+    <div class="jumbtron">
+      <h1>This is reset password link</h1>
+      <br>
+       <div>
+         <div>Please follow this link to reset your password</div>
+         <a class="message_button" href="{{ reset_url  }}">
+          Reset your password
+         </a>
+      </div>
+    </div>
+{% endblock %}

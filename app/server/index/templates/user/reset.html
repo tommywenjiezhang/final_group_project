@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="col-md-10 col-md-12 col-lg-10">
+    <h2>Change Password</h2>
+    <form class="form-reset" role="form" method="post" action="">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label for="confirm">{{ form.password.label }}</label>
+            {{ form.password(placeholder="password", class="form-control") }}
+            <span class="error">
+          {% if form.password.errors %}
+            {% for error in form.password.errors %}
+              {{ error }}
+            {% endfor %}
+          {% endif %}
+        </span>
+        </div>
+        <div class="form-group">
+            <label for="confirm">{{ form.confirm.label }}</label>
+            {{ form.confirm(placeholder="confirm", class="form-control") }}
+            <span class="error">
+          {% if form.confirm.errors %}
+            {% for error in form.confirm.errors %}
+              {{ error }}
+            {% endfor %}
+          {% endif %}
+        </span>
+        </div>
+        <button class="btn btn-success" type="submit">Update Password</button>
+    </form>
+  </div>
+
+
+{% endblock %}

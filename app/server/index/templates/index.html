@@ -1,5 +1,29 @@
 {% extends 'layout.html' %}
 {% block content %}
+     {% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+    <div class="alert alert-danger">
+      <a class="close" href="#">×</a>
+      <ul>
+        {%- for msg in errors %}
+        <li>{{ msg }}</li>
+        {% endfor -%}
+      </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+     {% with successes = get_flashed_messages(category_filter=["success"]) %}
+    {% if successes %}
+    <div class="alert alert-success">
+      <a class="close" href="#">×</a>
+      <ul>
+        {%- for msg in successes %}
+        <li>{{ msg }}</li>
+        {% endfor -%}
+      </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
     <div class="jumbotron">
   <h1 class="display-4">Hello, world!</h1>
   <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="col-md-10 col-md-10 col-sm-10">
+         {% with successes = get_flashed_messages(category_filter=["success"]) %}
+        {% if successes %}
+        <div class="alert alert-success">
+          <a class="close" href="#">×</a>
+          <ul>
+            {%- for msg in successes %}
+            <li>{{ msg }}</li>
+            {% endfor -%}
+          </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h1>This is profile page login required</h1>
+        {% if current_user.is_authenticated() %}
+            <h1>{{ current_user.name }}'s Profile</h1>
+            <p>Email: <strong>{{current_user.email}}</strong></p>
+        {% endif %}
+        <a href="/forget" class="btn btn-primary">want to reset your password</a>
+    </div>
+
+{% endblock %}
