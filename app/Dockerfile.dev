@@ -14,7 +14,6 @@ ENV FLASK_APP=server
 ENV FLASK_ENV=development
 ENV SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://root:root@db:3306/calculatorApp
 ENV SECRET_KEY=ZHANG
-ENV SENDGRID_API_KEY=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
 COPY wait-for-it.sh wait-for-it.sh
 RUN chmod +x wait-for-it.sh
 ENTRYPOINT [ "/bin/bash"]
