@@ -6,6 +6,9 @@ WORKDIR /app
 
 COPY requirements.txt /app
 RUN pip install -r requirements.txt
+RUN apt-get update && \
+    apt-get install dos2unix && \
+    apt-get clean
 
 EXPOSE 5000
 
@@ -15,6 +18,8 @@ ENV FLASK_ENV=development
 ENV SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://root:root@db:3306/calculatorApp
 ENV SECRET_KEY=ZHANG
 COPY wait-for-it.sh wait-for-it.sh
+RUN dos2unix ./wait-for-it.sh
+RUN dos2unix ./create.sh
 RUN chmod +x wait-for-it.sh
 ENTRYPOINT [ "/bin/bash"]
 CMD ["./create.sh"]
