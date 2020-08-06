@@ -6,30 +6,6 @@
 <br>
     <div class="col-md-10 col-lg-10 col-sm-11">
     <div class="text-center"><h1>Please login</h1></div>
-    {% with errors = get_flashed_messages(category_filter=["error"]) %}
-    {% if errors %}
-    <div class="alert alert-danger">
-      <a class="close" href="#">×</a>
-      <ul>
-        {%- for msg in errors %}
-        <li>{{ msg }}</li>
-        {% endfor -%}
-      </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
-     {% with successes = get_flashed_messages(category_filter=["success"]) %}
-    {% if successes %}
-    <div class="alert alert-success">
-      <a class="close" href="#">×</a>
-      <ul>
-        {%- for msg in successes %}
-        <li>{{ msg }}</li>
-        {% endfor -%}
-      </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
         <form class="form-login"  method="post" action="">
             {{ form.csrf_token }}
            <div class="form-group">

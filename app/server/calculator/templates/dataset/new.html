@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Create a new dataset</h1>
+<br>
+<div class="col-md-10 col-lg-10 col-sm-11">
+    <form role="form" method="post" action="">
+    {{ form.csrf_token }}
+    <div class="form-group">
+         <label for="username">{{ form.title.label }}</label>
+        {{ form.title(placeholder="title",class='form-control') }}
+        <span class="error">
+          {% if form.title.errors %}
+            {% for error in form.title.errors %}
+              {{ error }}
+            {% endfor %}
+          {% endif %}
+        </span>
+    </div>
+
+    <div class="form-group">
+         <label for="description">{{ form.description.label }}</label>
+        {{ form.description(placeholder="description",class='form-control') }}
+        <span class="error">
+          {% if form.description.errors %}
+            {% for error in form.description.errors %}
+              {{ error }}
+            {% endfor %}
+          {% endif %}
+        </span>
+    </div>
+
+     <div class="form-group">
+         <label for="values">{{ form.values.label }}</label>
+         {{ form.values(placeholder="values", class='form-control') }}
+        <span class="error">
+          {% if form.values.errors %}
+            {% for error in form.values.errors %}
+              {{ error }}
+            {% endfor %}
+          {% endif %}
+        </span>
+     </div>
+
+
+
+  <button class="btn btn-success" type="submit">Submit</button>
+</form>
+</div>
+
+
+{% endblock %}

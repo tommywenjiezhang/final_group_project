@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for, flash
 from flask.json import jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
@@ -18,6 +18,7 @@ def create_app(test_config=None):
 
     app.config.from_object('server.config.Config')
     app.secret_key = "zhang"
+    app.config['SERVER_NAME'] = 'localhost:5000'
     if test_config == None:
         app.config.from_object('server.config.Config')
     else:
@@ -40,6 +41,11 @@ def create_app(test_config=None):
             print("load_user function callback +++++++++++++++++++++++++")
             print(user_id)
             return User.query.filter(User.username == user_id).first()
+
+        @login_manager.unauthorized_handler
+        def unauthorized_callback():
+            flash("Your must log in first", "error")
+            return redirect('http://localhost:8081/api/login')
 
 
         @jwt.invalid_token_loader

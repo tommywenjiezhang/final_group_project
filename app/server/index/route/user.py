@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from server.model.userModel import UserModel
 from werkzeug.security import generate_password_hash
-from flask import Response, session, jsonify, render_template, flash, url_for, redirect, make_response, request
+from flask import Response, session, jsonify, render_template, flash, url_for, redirect, make_response, request, current_app
 import json
 from server.auth import authenicate
 from flask_jwt_extended import (
@@ -16,8 +16,9 @@ from datetime import datetime
 import pytz
 from flask_cors import cross_origin
 from .form import LoginForm, RegisterForm, ChangePasswordForm, ForgotForm
-from server.util import extractNumber
+from server.util import extractNumber, combinUrl
 from server.mail import check_confirmed
+
 
 
 class UserRegisterRoute(Resource):
@@ -38,13 +39,13 @@ class UserRegisterRoute(Resource):
                              )
 
             token = generate_confirmation_token(user.email)
-            confirm_url = url_for('index_bp.userconfirmemailroute', token=token, _external=True)
+            confirm_url = combinUrl(url_for('index_bp.userconfirmemailroute', token=token))
             html = render_template('user/activate.html', confirm_url=confirm_url, user_name=user.name)
             message = "Confirm Your email address"
             user.save_to_db()
             login_user(user)
             send_mail(user.email, message, html)
-            return redirect(url_for("index_bp.unconfirmed"))
+            return redirect(combinUrl('unconfirmed'))
         headers = {'Content-Type': 'text/html'}
         html = render_template('user/register.html', form=form)
         return make_response(html, 200, headers)
@@ -72,7 +73,7 @@ class UserLoginRoute(Resource):
             login_user(user, remember=True)
             access_token = create_access_token(identity=userObj)
             jsonResponse = jsonify(access_token=access_token, user_id=user.id)
-            return redirect(url_for('index_bp.profile'))
+            return redirect("http://localhost:8081/profile")
         html = render_template('user/login.html', form=form)
         headers = {'Content-Type': 'text/html'}
         return make_response(html, 200, headers)
@@ -122,7 +123,7 @@ class resend_confirmation(Resource):
     @login_required
     def get(self):
         token = generate_confirmation_token(current_user.email)
-        confirm_url = url_for('index_bp.userconfirmemailroute', token=token, _external=True)
+        confirm_url = combinUrl(url_for('index_bp.userconfirmemailroute', token=token))
         html = render_template('user/activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_mail(current_user.email, subject, html)
@@ -135,6 +136,7 @@ class Logout(Resource):
     def get(self):
         logout_user()
         flash('You were logged out.', 'success')
+
         return redirect(url_for('index_bp.userloginroute'))
 
 class Forgetpassword(Resource):
@@ -156,7 +158,8 @@ class Forgetpassword(Resource):
         subject = "Reset your password"
         send_mail(user.email, subject, html)
         flash('A password reset email has been sent via email.', 'success')
-        return redirect(url_for("index_bp.indexroute"))
+        forgetUrl = current_app.config['LOCAL_BASE_URL'] + 'unconfirmed'
+        return redirect(forgetUrl)
 
 class ResetPassword(Resource):
     def get(self, token):

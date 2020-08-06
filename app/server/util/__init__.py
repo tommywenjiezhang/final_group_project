@@ -2,12 +2,17 @@ from hashlib import sha224
 from datetime import datetime
 import pytz
 import re
+import os
 def hashIdandTitle(title,id):
     raw = title + str(id)
     return sha224(raw.encode('utf-8')).hexdigest()
 
 def todayandnow():
     return datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %H:%M:%S')
+
+def combinUrl(params):
+    baseUrl = os.environ.get('LOCAL_BASE_URL')
+    return baseUrl + str(params)
 
 
 def extractNumber(phoneNumberString):
