@@ -43,7 +43,7 @@ services:
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     volumes:
       - ./client:/app
       - /client/node_modules
